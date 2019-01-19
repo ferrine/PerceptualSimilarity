@@ -12,25 +12,35 @@ import os
 import os.path
 
 IMG_EXTENSIONS = [
-    '.jpg', '.JPG', '.jpeg', '.JPEG',
-    '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',
+    ".jpg",
+    ".JPG",
+    ".jpeg",
+    ".JPEG",
+    ".png",
+    ".PNG",
+    ".ppm",
+    ".PPM",
+    ".bmp",
+    ".BMP",
 ]
 
-NP_EXTENSIONS = ['.npy',]
+NP_EXTENSIONS = [".npy"]
 
-def is_image_file(filename, mode='img'):
-    if(mode=='img'):
+
+def is_image_file(filename, mode="img"):
+    if mode == "img":
         return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
-    elif(mode=='np'):
+    elif mode == "np":
         return any(filename.endswith(extension) for extension in NP_EXTENSIONS)
 
-def make_dataset(dirs, mode='img'):
-    if(not isinstance(dirs,list)):
-        dirs = [dirs,]
+
+def make_dataset(dirs, mode="img"):
+    if not isinstance(dirs, list):
+        dirs = [dirs]
 
     images = []
     for dir in dirs:
-        assert os.path.isdir(dir), '%s is not a valid directory' % dir
+        assert os.path.isdir(dir), "%s is not a valid directory" % dir
         for root, _, fnames in sorted(os.walk(dir)):
             for fname in fnames:
                 if is_image_file(fname, mode=mode):
@@ -40,16 +50,21 @@ def make_dataset(dirs, mode='img'):
     # print("Found %i images in %s"%(len(images),root))
     return images
 
+
 def default_loader(path):
-    return Image.open(path).convert('RGB')
+    return Image.open(path).convert("RGB")
+
 
 class ImageFolder(data.Dataset):
-    def __init__(self, root, transform=None, return_paths=False,
-                 loader=default_loader):
+    def __init__(self, root, transform=None, return_paths=False, loader=default_loader):
         imgs = make_dataset(root)
         if len(imgs) == 0:
-            raise(RuntimeError("Found 0 images in: " + root + "\n"
-                               "Supported image extensions are: " + ",".join(IMG_EXTENSIONS)))
+            raise (
+                RuntimeError(
+                    "Found 0 images in: " + root + "\n"
+                    "Supported image extensions are: " + ",".join(IMG_EXTENSIONS)
+                )
+            )
 
         self.root = root
         self.imgs = imgs
